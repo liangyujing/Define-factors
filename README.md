@@ -16,6 +16,19 @@ experimental_df$RT<-as.numeric(experimental_df$RT, digits = 3)
 experimental_df$confidence<-as.numeric(experimental_df$confidence, digits = 2)
 summary(experimental_df)
 
+# create factor of solution-type
+mixedef_correct$solution_type<-factor(mixedef_correct$solution_type, levels = c(0, 1), labels = c("Non-Insight", "Insight"))
+mixedef_correct<-mixedef_correct%>%
+  filter(subject != "37669" & subject != "39823" & baseline_RMSSD > 0)
+summary(mixedef_correct)
+
+# correct incorrect
+mixedef_correct_incorrect<-mixedef_correct_incorrect%>%
+  mutate(solution_type = if_else(solution_type == 2, 0, 1))
+
+# create factor of solution-type
+mixedef_correct_incorrect$solution_type<-factor(mixedef_correct_incorrect$solution_type, levels = c(0, 1), labels = c("Non-Insight", "Insight"))
+
 # create two data frames one with correct and incorrect responses and one with only correct responses
 mixedef_correct<-experimental_df %>%
   filter(ACC == 1) %>% 
@@ -32,3 +45,5 @@ mixedef_correct_incorrect<-experimental_df %>%
 summary(mixedef_correct_incorrect)
 
 sd(mixedef_correct_incorrect$age)
+
+
